@@ -1,11 +1,595 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>name</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyNest – Student Shop</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --primary:   #4f8ef7;
+      --secondary: #ff7043;
+      --accent:    #ffd54f;
+      --bg:        #f0f5ff;
+      --card-bg:   #ffffff;
+      --text:      #2d3748;
+      --muted:     #718096;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1, h2, h3, .brand {
+      font-family: 'Fredoka One', cursive;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: var(--primary);
+      box-shadow: 0 4px 12px rgba(79,142,247,.35);
+    }
+    .navbar-brand {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.6rem;
+      color: #fff !important;
+      letter-spacing: 1px;
+    }
+    .navbar-brand span { color: var(--accent); }
+    .nav-link { color: rgba(255,255,255,.85) !important; font-weight: 700; }
+    .nav-link:hover { color: var(--accent) !important; }
+    .cart-badge {
+      background: var(--secondary);
+      border-radius: 50%;
+      padding: 2px 7px;
+      font-size: .75rem;
+      color: #fff;
+      font-weight: 800;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #4f8ef7 0%, #38c6f4 100%);
+      padding: 80px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    .hero p { color: rgba(255,255,255,.9); font-size: 1.15rem; }
+    .hero .btn-hero {
+      background: var(--accent);
+      color: var(--text);
+      font-weight: 800;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 36px;
+      font-size: 1.1rem;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,.2);
+    }
+    .hero .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+
+    .hero-img {
+      font-size: 9rem;
+      line-height: 1;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,.18));
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-14px); }
+    }
+
+    /* ── CATEGORIES ── */
+    .section-title {
+      font-size: 2rem;
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--secondary);
+      margin-top: 4px;
+      width: 60%;
+    }
+
+    .cat-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 16px;
+      text-align: center;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all .25s;
+      box-shadow: 0 3px 12px rgba(0,0,0,.07);
+    }
+    .cat-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 24px rgba(79,142,247,.2);
+    }
+    .cat-card .cat-icon { font-size: 2.6rem; margin-bottom: 8px; }
+    .cat-card h6 { font-weight: 800; margin: 0; color: var(--text); }
+
+    /* ── PRODUCTS ── */
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+      transition: transform .25s, box-shadow .25s;
+      height: 100%;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 30px rgba(79,142,247,.2);
+    }
+    .product-img-wrap {
+      background: linear-gradient(135deg, #e8f0fe, #fce4ec);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 160px;
+      font-size: 5rem;
+    }
+    .product-card .badge-new {
+      position: absolute;
+      top: 12px; left: 12px;
+      background: var(--secondary);
+      color: #fff;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 3px 10px;
+      font-size: .75rem;
+    }
+    .product-card .card-body { padding: 16px; }
+    .product-card .card-title { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
+    .product-card .card-text { color: var(--muted); font-size: .875rem; }
+    .price { font-weight: 800; font-size: 1.15rem; color: var(--primary); }
+    .btn-add {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      width: 100%;
+      padding: 8px;
+      transition: background .2s, transform .15s;
+    }
+    .btn-add:hover { background: #3a7de0; transform: scale(1.03); color: #fff; }
+
+    /* ── BANNER ── */
+    .promo-banner {
+      background: linear-gradient(120deg, var(--secondary), #ff8a65);
+      border-radius: 24px;
+      padding: 40px 36px;
+      color: #fff;
+    }
+    .promo-banner h2 { font-size: 2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #2d3748;
+      color: #a0aec0;
+    }
+    footer a { color: #a0aec0; text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+    footer .brand { color: #fff; font-size: 1.4rem; }
+    footer .brand span { color: var(--accent); }
+  </style>
 </head>
 <body>
-    <h2>welcome to my website</h2>
+
+<!-- ══════════ NAVBAR ══════════ -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">📚 Study<span>Nest</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon" style="filter:invert(1)"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto gap-2 align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="#products">Shop</a></li>
+        <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="#deals">Deals</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="bi bi-cart3 fs-5"></i>
+            <span class="cart-badge ms-1">3</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <p class="fw-700 text-white opacity-75 mb-2">🎒 Everything for School Life</p>
+        <h1>Your One-Stop<br>Student Shop!</h1>
+        <p class="mb-4">Get all your school supplies in one place — pens, notebooks, bags, and more. Start your semester the smart way!</p>
+        <a href="#products" class="btn btn-hero me-2">Shop Now <i class="bi bi-arrow-right"></i></a>
+        <a href="#deals" class="btn btn-outline-light rounded-pill px-4 fw-700">View Deals</a>
+      </div>
+      <div class="col-lg-6 text-center">
+        <div class="hero-img">🎒</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CATEGORIES ══════════ -->
+<section class="py-5" id="categories">
+  <div class="container">
+    <h2 class="section-title mb-4">Shop by Category</h2>
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">📓</div>
+          <h6>Notebooks</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">🖊️</div>
+          <h6>Pens & Pencils</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">📐</div>
+          <h6>Geometry Sets</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">🎒</div>
+          <h6>Bags & Cases</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">🖍️</div>
+          <h6>Art Supplies</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">📏</div>
+          <h6>Rulers & Tools</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">🔖</div>
+          <h6>Sticky Notes</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="cat-card">
+          <div class="cat-icon">🖥️</div>
+          <h6>Tech Accessories</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PRODUCTS ══════════ -->
+<section class="py-5" id="products" style="background:#e8effe;">
+  <div class="container">
+    <h2 class="section-title mb-4">Popular Products</h2>
+
+    <!-- Filter Pills -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+      <button class="btn btn-primary rounded-pill px-4 fw-700">All</button>
+      <button class="btn btn-outline-primary rounded-pill px-4 fw-700">Notebooks</button>
+      <button class="btn btn-outline-primary rounded-pill px-4 fw-700">Pens</button>
+      <button class="btn btn-outline-primary rounded-pill px-4 fw-700">Bags</button>
+      <button class="btn btn-outline-primary rounded-pill px-4 fw-700">Art</button>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Product 1 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card position-relative">
+          <span class="badge-new">NEW</span>
+          <div class="product-img-wrap">📓</div>
+          <div class="card-body">
+            <h6 class="card-title">Spiral Notebook A5</h6>
+            <p class="card-text">200 pages · Ruled lines</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$2.50</span>
+              <div>⭐⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card position-relative">
+          <div class="product-img-wrap">🖊️</div>
+          <div class="card-body">
+            <h6 class="card-title">Ballpoint Pen Set</h6>
+            <p class="card-text">12 pcs · Multicolor</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$3.99</span>
+              <div>⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card position-relative">
+          <span class="badge-new">HOT</span>
+          <div class="product-img-wrap">✏️</div>
+          <div class="card-body">
+            <h6 class="card-title">HB Pencil Pack</h6>
+            <p class="card-text">20 pcs · With eraser</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$1.80</span>
+              <div>⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card position-relative">
+          <div class="product-img-wrap">🎒</div>
+          <div class="card-body">
+            <h6 class="card-title">Student Backpack</h6>
+            <p class="card-text">Waterproof · 30L</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$18.00</span>
+              <div>⭐⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card">
+          <div class="product-img-wrap">📐</div>
+          <div class="card-body">
+            <h6 class="card-title">Geometry Set</h6>
+            <p class="card-text">8-piece · Metal & plastic</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$4.50</span>
+              <div>⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card">
+          <div class="product-img-wrap">🖍️</div>
+          <div class="card-body">
+            <h6 class="card-title">Colour Pencils</h6>
+            <p class="card-text">24 colors · Smooth pigment</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$5.99</span>
+              <div>⭐⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 7 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card">
+          <div class="product-img-wrap">🔖</div>
+          <div class="card-body">
+            <h6 class="card-title">Sticky Notes Bundle</h6>
+            <p class="card-text">6 pads · Neon colors</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$2.20</span>
+              <div>⭐⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 8 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card">
+          <div class="product-img-wrap">✂️</div>
+          <div class="card-body">
+            <h6 class="card-title">Safety Scissors</h6>
+            <p class="card-text">Stainless · Non-slip grip</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="price">$1.50</span>
+              <div>⭐⭐⭐</div>
+            </div>
+            <button class="btn btn-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROMO BANNER ══════════ -->
+<section class="py-5" id="deals">
+  <div class="container">
+    <div class="promo-banner">
+      <div class="row align-items-center g-4">
+        <div class="col-md-7">
+          <p class="fw-700 mb-1" style="font-size:1.1rem; opacity:.85;">🔥 Limited Time Offer</p>
+          <h2>Back-to-School<br>Bundle Deal!</h2>
+          <p style="opacity:.9;">Get a Notebook + Pen Set + Pencil Pack for only <strong>$6.99</strong>. Save 30%! 🎉</p>
+          <a href="#" class="btn btn-light fw-800 rounded-pill px-5 mt-2">Grab the Bundle</a>
+        </div>
+        <div class="col-md-5 text-center" style="font-size:6rem; line-height:1;">🛍️</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHY US ══════════ -->
+<section class="py-5" style="background:#e8effe;">
+  <div class="container">
+    <h2 class="section-title mb-5">Why Students Love Us</h2>
+    <div class="row g-4 text-center">
+      <div class="col-6 col-md-3">
+        <div style="font-size:2.5rem;">🚀</div>
+        <h6 class="fw-800 mt-2">Fast Delivery</h6>
+        <p class="text-muted small">Delivered to your door in 1–2 days</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div style="font-size:2.5rem;">💰</div>
+        <h6 class="fw-800 mt-2">Budget Friendly</h6>
+        <p class="text-muted small">Prices made for student wallets</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div style="font-size:2.5rem;">🌟</div>
+        <h6 class="fw-800 mt-2">Quality Items</h6>
+        <p class="text-muted small">Trusted brands you can count on</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div style="font-size:2.5rem;">🔄</div>
+        <h6 class="fw-800 mt-2">Easy Returns</h6>
+        <p class="text-muted small">Not happy? Return within 7 days</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ NEWSLETTER ══════════ -->
+<section class="py-5" style="background: linear-gradient(135deg, #4f8ef7, #38c6f4);">
+  <div class="container text-center text-white">
+    <h2>📬 Stay in the Loop!</h2>
+    <p class="mb-4 opacity-75">Get exclusive student deals and back-to-school tips straight to your inbox.</p>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="input-group rounded-pill overflow-hidden shadow">
+          <input type="email" class="form-control border-0 ps-4" placeholder="Enter your school email..."/>
+          <button class="btn fw-800 px-4" style="background:var(--accent); color:#2d3748;">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="brand">📚 Study<span>Nest</span></div>
+        <p class="mt-2 small">Your friendly student accessories store. Everything you need to ace the school year!</p>
+      </div>
+      <div class="col-6 col-md-2">
+        <h6 class="text-white fw-800">Shop</h6>
+        <ul class="list-unstyled small">
+          <li><a href="#">Notebooks</a></li>
+          <li><a href="#">Pens</a></li>
+          <li><a href="#">Bags</a></li>
+          <li><a href="#">Art Supplies</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-2">
+        <h6 class="text-white fw-800">Help</h6>
+        <ul class="list-unstyled small">
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h6 class="text-white fw-800">Follow Us</h6>
+        <div class="d-flex gap-3 mt-2" style="font-size:1.5rem;">
+          <a href="#" title="Instagram">📸</a>
+          <a href="#" title="Facebook">📘</a>
+          <a href="#" title="TikTok">🎵</a>
+          <a href="#" title="YouTube">▶️</a>
+        </div>
+        <p class="small mt-3">📍 123 School Street, Phnom Penh, Cambodia</p>
+        <p class="small">📞 +855 12 345 678</p>
+      </div>
+    </div>
+    <hr style="border-color:#4a5568;" class="mt-4"/>
+    <p class="text-center small mb-0">© 2026 StudyNest · Made with ❤️ for students everywhere</p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Simple cart counter
+  let cartCount = 3;
+  document.querySelectorAll('.btn-add').forEach(btn => {
+    btn.addEventListener('click', function () {
+      cartCount++;
+      document.querySelector('.cart-badge').textContent = cartCount;
+      this.innerHTML = '<i class="bi bi-check-circle me-1"></i>Added!';
+      this.style.background = '#38a169';
+      setTimeout(() => {
+        this.innerHTML = '<i class="bi bi-cart-plus me-1"></i>Add to Cart';
+        this.style.background = '';
+      }, 1200);
+    });
+  });
+
+  // Category filter buttons (active state toggle)
+  document.querySelectorAll('.btn-outline-primary, .btn-primary').forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (this.closest('.d-flex')) {
+        this.closest('.d-flex').querySelectorAll('.btn').forEach(b => {
+          b.classList.remove('btn-primary');
+          b.classList.add('btn-outline-primary');
+        });
+        this.classList.remove('btn-outline-primary');
+        this.classList.add('btn-primary');
+      }
+    });
+  });
+</script>
 </body>
 </html>
